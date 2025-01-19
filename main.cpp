@@ -12,7 +12,7 @@ const int maxLen = 15;
 
 // banner displayed at the start of the program
 const string banner =
-"888b    888                                      888 888          \n\
+"\n888b    888                                      888 888          \n\
 8888b   888                                      888 888          \n\
 88888b  888                                      888 888          \n\
 888Y88b 888  8888b.  88888b.d88b.   .d88b.   .d88888 888  .d88b.  \n\
@@ -223,8 +223,7 @@ void startRound(int len, string secret, int guesses) {
 void startGame() {
   // description of game
   cout << banner << endl;
-  cout << "A name guessing game" << endl;
-  cout << "by Leran (Alan) Tao. Inspired by Wordle.\n\n\n";
+  cout << "A name guessing game inspired by Wordle.\n\n\n";
 
   // add names and record the time it took
   cout << "Adding names..." << endl;
