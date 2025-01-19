@@ -1,8 +1,16 @@
+/*
+Namedle is a game inspired by Wordle.
+Code is 100% by me, I didn't work with a partner.
+*/
+
 #include <bits/stdc++.h>
 
 using namespace std;
 
+// maximum length of name
 const int maxLen = 15;
+
+// banner displayed at the start of the program
 const string banner =
 "888b    888                                      888 888          \n\
 8888b   888                                      888 888          \n\
@@ -13,8 +21,10 @@ const string banner =
 888   Y8888 888  888 888  888  888 Y8b.     Y88b 888 888 Y8b.     \n\
 888    Y888 \"Y888888 888  888  888  \"Y8888   \"Y88888 888  \"Y8888  \n";
 
+// a vector of sets that contain all possible names organized by length
 vector<set<string>> names(maxLen+1);
 
+// method that turns a string to all lowercase
 string lower(string s) {
   string res = "";
   for (char c : s) {
@@ -24,8 +34,10 @@ string lower(string s) {
   return res;
 }
 
+// read names from "names" folder and put them in names vector
 void initNames() {
   for (int year = 1880; year <= 2023; year++) {
+    // name files are stored in names/yob_YEAR.txt, format is Name,Gender,Count
     ifstream input("names/yob"+to_string(year)+".txt");
 
     string line;
@@ -43,6 +55,7 @@ void initNames() {
   }
 }
 
+// check if input is a number
 bool isNumber(string ans) {
   for (char c : ans) {
     if (!isdigit(c)) return false;
@@ -50,6 +63,7 @@ bool isNumber(string ans) {
   return true;
 }
 
+// check if input is a boolean (yes or no)
 int isBool(string ans) {
   if (lower(ans) == "yes" || lower(ans) == "y") {
     return 1;
@@ -59,6 +73,7 @@ int isBool(string ans) {
   return -1;
 }
 
+// generate a random name based on a given length
 string generateRandomName(int len) {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -73,6 +88,7 @@ string generateRandomName(int len) {
   return lower(*it);
 }
 
+// ask the user to input the length of the name to guess
 int inputLength() {
   string prompt = "Length of name to guess (2-" + to_string(maxLen) + "): ";
   cout << prompt;
@@ -100,6 +116,7 @@ int inputLength() {
   return iAns;
 }
 
+// a method to ask the user to input the number of guesses
 int inputNumberOfGuesses() {
   string prompt = "Number of guesses (at least 1): ";
   cout << prompt;
@@ -125,13 +142,18 @@ int inputNumberOfGuesses() {
   return iAns;
 }
 
+// a method that compares the guess with the answer and generates an output string
 string validateAnswer(int len, string guess, string secret) {
+  // add characters of guess to a frequency array
   vector<int> arr(26);
   for (int i = 0; i < len; i++) {
     arr[secret[i]-'a']++;
   }
 
+  // create output string
   string s(len, 'x');
+
+  // update if the character is in the right place
   for (int i = 0; i < len; i++) {
     if (guess[i] == secret[i]) {
       arr[guess[i]-'a']--;
@@ -139,6 +161,7 @@ string validateAnswer(int len, string guess, string secret) {
     }
   }
 
+  // update if the character is right but in the wrong place
   for (int i = 0; i < len; i++) {
     if (guess[i] != secret[i] && arr[guess[i]-'a'] > 0) {
       arr[guess[i]-'a']--;
@@ -149,8 +172,10 @@ string validateAnswer(int len, string guess, string secret) {
   return s;
 }
 
+// a method to start a round of guessing
 void startRound(int len, string secret, int guesses) {
-  cout << "\nYou have " + to_string(guesses) + " tries to guess a " + to_string(len) + "-letter word.\n\n";
+  // instructions
+  cout << "\nYou have " + to_string(guesses) + " tries to guess a " + to_string(len) + "-letter name.\n\n";
   cout << ". = right letter, correct place" << endl;
   cout << "o = right letter, incorrect place" << endl;
   cout << "x = wrong letter\n\n";
@@ -159,6 +184,8 @@ void startRound(int len, string secret, int guesses) {
   string prompt = "Your guess:\n";
   int g = guesses;
   bool won = false;
+
+  // guessing loop
   while (g > 0) {
     cout << g << " guesses left." << endl;
     cout << prompt;
@@ -172,12 +199,12 @@ void startRound(int len, string secret, int guesses) {
       cout << "Too long! " << "Enter " << len << " letters.\n\n";
     } else if (names[len].find(guess) == names[len].end()) {
       cout << "Not a valid name!\n\n";
-    } else {
+    } else { // guess is valid
       g--;
       string res = validateAnswer(len, lower(guess), secret);
       cout << res << "\n\n";
       if (res == string(len, '.')) {
-        // right answer!
+        // correct answer, user won
         won = true;
         break;
       }
@@ -192,10 +219,14 @@ void startRound(int len, string secret, int guesses) {
   }
 }
 
+// a method to start the game with multiple rounds until user quits
 void startGame() {
+  // description of game
   cout << banner << endl;
+  cout << "A name guessing game" << endl;
   cout << "by Leran (Alan) Tao. Inspired by Wordle.\n\n\n";
 
+  // add names and record the time it took
   cout << "Adding names..." << endl;
   auto t1 = chrono::high_resolution_clock::now();
   
@@ -206,6 +237,7 @@ void startGame() {
 
   cout << "Done in " << ms_int.count() << "ms.\n\n";
 
+  // main game loop
   while (true) {
     int len = inputLength();
     string secret = generateRandomName(len);
@@ -213,14 +245,15 @@ void startGame() {
 
     startRound(len, secret, guesses);
 
+    // repeatedly ask for a valid boolean answer
     string ans = "";
     while (isBool(ans) == -1) {
       cout << "\nPlay again (yes/no): ";
       cin >> ans;
     }
-    
-    int bAns = isBool(ans);
-    if (bAns == 0) {
+
+    if (isBool(ans) == 0) {
+      // user doens't want to play again
       cout << "\nThanks for playing!" << endl;
       break;
     }
@@ -229,6 +262,7 @@ void startGame() {
   }
 }
 
+// main function to just execute startGame function when program starts
 int main() {
   
   startGame();
