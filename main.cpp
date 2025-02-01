@@ -75,9 +75,10 @@ int isBool(string ans) {
 
 // generate a random name based on a given length
 string generateRandomName(int len) {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<> distr(0, names[len].size()-1);
+  // https://stackoverflow.com/questions/13445688/how-to-generate-a-random-number-in-c
+  random_device rd;
+  mt19937 gen(rd());
+  uniform_int_distribution<> distr(0, names[len].size()-1);
 
   int rand = distr(gen);
   auto it = names[len].begin();
@@ -227,6 +228,8 @@ void startGame() {
 
   // add names and record the time it took
   cout << "Adding names..." << endl;
+
+  // https://stackoverflow.com/questions/876901/calculating-execution-time-in-c
   auto t1 = chrono::high_resolution_clock::now();
   
   initNames();
