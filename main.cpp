@@ -37,6 +37,7 @@ string lower(string s) {
 // read names from "names" folder and put them in names vector
 void initNames() {
   for (int year = 1880; year <= 2023; year++) {
+    // name files downloaded from https://github.com/ankane/age/tree/master/names
     // name files are stored in names/yob_YEAR.txt, format is Name,Gender,Count
     ifstream input("names/yob"+to_string(year)+".txt");
 

@@ -1,0 +1,8 @@
+    } else {
+      g--;
+      string res = validateAnswer(len, lower(guess), secret);
+      cout << res << "\n\n";
+      if (res == string(len, '.')) {
+        won = true;
+        break;
+      }

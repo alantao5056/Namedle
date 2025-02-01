@@ -1,0 +1,3 @@
+    } else if (names[len].find(guess) == names[len].end()) {
+      cout << "Not a valid name!\n\n";
+    } else {

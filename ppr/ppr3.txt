@@ -1,0 +1,18 @@
+void initNames() {
+  for (int year = 1880; year <= 2023; year++) {
+    ifstream input("names/yob"+to_string(year)+".txt");
+
+    string line;
+    while (getline(input, line)) {
+      string name = "";
+      for (int i = 0; i < line.size(); i++) {
+        if (line[i] == ',') {
+          break;
+        }
+        name += line[i];
+      }
+      names[name.size()].insert(lower(name));
+    }
+    input.close();
+  }
+}
