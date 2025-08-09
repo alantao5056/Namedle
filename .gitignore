@@ -1,1 +1,4 @@
 .vscode
+*.ilk
+*.obj
+*.pdb
